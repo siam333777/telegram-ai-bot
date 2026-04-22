@@ -2,7 +2,8 @@ import os
 import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 # --- Setup ---
 logging.basicConfig(level=logging.INFO)
@@ -10,11 +11,10 @@ logging.basicConfig(level=logging.INFO)
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 
-genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel("gemini-2.0-flash")
+client = genai.Client(api_key=GEMINI_API_KEY)
 
-# Stores a separate chat history per user
-chat_sessions = {}
+# Stores conversation history per user
+chat_histories = {}
 
 
 # --- Commands ---
@@ -30,8 +30,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-    if user_id in chat_sessions:
-        del chat_sessions[user_id]
+    if user_id in chat_histories:
+        del chat_histories[user_id]
     await update.message.reply_text("🔄 Chat history cleared! Let's start fresh.")
 
 
@@ -41,18 +41,30 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     user_message = update.message.text
 
-    # Create a new chat session for this user if one doesn't exist
-    if user_id not in chat_sessions:
-        chat_sessions[user_id] = model.start_chat(history=[])
+    if user_id not in chat_histories:
+        chat_histories[user_id] = []
 
-    chat = chat_sessions[user_id]
+    # Add user message to history
+    chat_histories[user_id].append(
+        types.Content(role="user", parts=[types.Part(text=user_message)])
+    )
 
     try:
-        # Show "typing..." indicator while waiting for the response
         await update.message.chat.send_action("typing")
 
-        response = chat.send_message(user_message)
-        await update.message.reply_text(response.text)
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=chat_histories[user_id]
+        )
+
+        reply = response.text
+
+        # Add assistant reply to history
+        chat_histories[user_id].append(
+            types.Content(role="model", parts=[types.Part(text=reply)])
+        )
+
+        await update.message.reply_text(reply)
 
     except Exception as e:
         logging.error(f"Error for user {user_id}: {e}")
@@ -73,3 +85,4 @@ if __name__ == "__main__":
 
     print("Bot is running! Press Ctrl+C to stop.")
     app.run_polling()
+    

@@ -69,7 +69,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "<b>Commands:</b>\n"
         "• /start — Show this message\n"
         "• /reset — Clear chat history\n\n"
-        "<i>📢 Follow us: @WoniAI</i>",
+        "<i>📢 Follow us: @Woni_ai</i>",
         parse_mode="HTML"
     )
 

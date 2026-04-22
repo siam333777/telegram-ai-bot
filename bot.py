@@ -16,18 +16,24 @@ chat_histories = {}
 
 SYSTEM_PROMPT = """You are a helpful and friendly AI assistant on Telegram.
 
-Always format your responses using Telegram HTML formatting:
-- Use <b>bold</b> for important words or headings
-- Use <i>italic</i> for emphasis
-- Use <u>underline</u> for key terms
-- Use <code>monospace</code> for code, commands, or technical terms
-- Use <pre>code block</pre> for multi-line code
-- Use <blockquote>text</blockquote> for quotes or highlights
-- Use <tg-spoiler>text</tg-spoiler> for spoilers or hidden info
-- Use <a href="URL">link text</a> for links
+Format your responses clearly and structured using these Telegram HTML tags:
 
-Make responses well-structured, clear, and visually appealing using these formats naturally.
-Never use markdown like **bold** or _italic_ — only use the HTML tags above."""
+FORMATTING RULES:
+- <b>bold</b> — use ONLY for section headings or the most critical keyword (max 1-2 per response)
+- <i>italic</i> — use ONLY for definitions or introducing a new term (not random emphasis)
+- <code>monospace</code> — use ONLY for actual code, commands, file names, or technical syntax
+- <pre>code block</pre> — use ONLY for multi-line code snippets
+- <blockquote>text</blockquote> — use ONLY for quoting something or a key takeaway at the end
+- <u>underline</u> — do NOT use at all
+- <tg-spoiler>text</tg-spoiler> — use ONLY when explicitly asked
+
+STRUCTURE RULES:
+- For explanations: start with a one-line summary, then use sections with <b>headings</b>
+- For lists: use a clean emoji bullet like • or numbers
+- Keep paragraphs short (2-3 sentences max)
+- End with a helpful follow-up question or tip when relevant
+
+NEVER randomly apply formatting to normal words. Less is more."""
 
 
 # --- Commands ---
@@ -37,8 +43,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "👋 Hi! I'm an AI assistant powered by Groq + LLaMA 3.\n\n"
         "Just send me any message and I'll reply!\n\n"
         "<b>Commands:</b>\n"
-        "/start - Show this message\n"
-        "/reset - Clear chat history",
+        "• /start — Show this message\n"
+        "• /reset — Clear chat history",
         parse_mode="HTML"
     )
 
@@ -74,11 +80,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply = response.choices[0].message.content
         chat_histories[user_id].append({"role": "assistant", "content": reply})
 
-        # Try sending with HTML formatting
         try:
             await update.message.reply_text(reply, parse_mode="HTML")
         except Exception:
-            # If HTML parsing fails, send as plain text
             await update.message.reply_text(reply)
 
     except Exception as e:
@@ -100,4 +104,3 @@ if __name__ == "__main__":
 
     print("Bot is running! Press Ctrl+C to stop.")
     app.run_polling()
-    

@@ -26,6 +26,7 @@ FORMATTING RULES:
 - <blockquote>text</blockquote> — use ONLY for quoting something or a key takeaway at the end
 - <u>underline</u> — do NOT use at all
 - <tg-spoiler>text</tg-spoiler> — use ONLY when explicitly asked
+- <a href="URL">link text</a> — ALWAYS use this for any URL. Never show raw links. Example: <a href="https://wikipedia.org">Wikipedia</a>
 
 STRUCTURE RULES:
 - For explanations: start with a one-line summary, then use sections with <b>headings</b>
@@ -104,3 +105,4 @@ if __name__ == "__main__":
 
     print("Bot is running! Press Ctrl+C to stop.")
     app.run_polling()
+    

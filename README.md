@@ -1,4 +1,4 @@
-# Telegram AI Chatbot (Powered by Google Gemini)
+# Telegram AI Chatbot
 
 A simple Telegram bot that uses Google Gemini to answer messages. Each user gets their own chat history, so it remembers context within a conversation.
 

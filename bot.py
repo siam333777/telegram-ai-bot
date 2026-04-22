@@ -53,7 +53,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.chat.send_action("typing")
 
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-2.0-flash-lite",
             contents=chat_histories[user_id]
         )
 

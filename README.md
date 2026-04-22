@@ -1,6 +1,6 @@
-# Telegram AI Chatbot
+# Telegram AI Chatbot (Powered by Groq + LLaMA 3)
 
-A simple Telegram bot that uses Google Gemini to answer messages. Each user gets their own chat history, so it remembers context within a conversation.
+A simple Telegram bot that uses Groq's free AI API to answer messages. Each user gets their own chat history, so it remembers context within a conversation.
 
 ---
 
@@ -14,14 +14,14 @@ A simple Telegram bot that uses Google Gemini to answer messages. Each user gets
 
 ---
 
-## Step 2 — Get your Gemini API Key
+## Step 2 — Get your Groq API Key
 
-1. Go to https://aistudio.google.com/app/apikey
-2. Sign in with your Google account
-3. Click **"Create API Key"**
-4. Copy the key — this is your `GEMINI_API_KEY`
+1. Go to https://console.groq.com
+2. Sign up for free
+3. Click **"API Keys"** → **"Create API Key"**
+4. Copy the key — this is your `GROQ_API_KEY`
 
-> The free tier gives you 15 requests/minute and 1 million tokens/day — plenty for a personal bot!
+> Groq's free tier is very generous — great for personal bots!
 
 ---
 
@@ -29,11 +29,11 @@ A simple Telegram bot that uses Google Gemini to answer messages. Each user gets
 
 1. Go to https://railway.app and sign up (free)
 2. Click **"New Project" → "Deploy from GitHub repo"**
-3. Push these files to a GitHub repo first (or use Railway's file upload)
+3. Push these files to a GitHub repo first
 4. After linking the repo, go to your project → **Variables** tab
 5. Add these two environment variables:
    - `TELEGRAM_TOKEN` → your token from Step 1
-   - `GEMINI_API_KEY` → your key from Step 2
+   - `GROQ_API_KEY` → your key from Step 2
 6. Railway will auto-deploy. Your bot will start running!
 
 ---
@@ -45,6 +45,7 @@ A simple Telegram bot that uses Google Gemini to answer messages. Each user gets
 | `bot.py` | Main bot code |
 | `requirements.txt` | Python dependencies |
 | `Procfile` | Tells Railway how to run the bot |
+| `runtime.txt` | Pins Python version to 3.11 |
 
 ---
 
@@ -54,16 +55,3 @@ A simple Telegram bot that uses Google Gemini to answer messages. Each user gets
 |---------|-------------|
 | `/start` | Shows welcome message |
 | `/reset` | Clears chat history for that user |
-
----
-
-## How to push to GitHub (quick guide)
-
-```bash
-git init
-git add .
-git commit -m "Initial bot"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
-git push -u origin main
-```
